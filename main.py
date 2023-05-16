@@ -8,11 +8,15 @@ class Ball:
         self.canvas = canvas
         self.colors = ['yellow', 'blue']
         self.color_index = 0
-        self.id = canvas.create_oval(10, 10, 35, 35, fill=self.colors[self.color_index])
+        self.id = canvas.create_oval(10, 10, 35, 35,
+                                     fill=self.colors[self.color_index])
         self.canvas.move(self.id, 245, 100)
-        self.x = 0
-        self.y = -1
+        starts = [-3, -2, -1, 1, 2, 3]
+        random.shuffle(starts)
+        self.x = starts[0]
+        self.y = -3
         self.canvas_height = self.canvas.winfo_height()
+        self.canvas_width = self.canvas.winfo_width()
 
     def draw(self):
         self.canvas.move(self.id, self.x, self.y)
@@ -21,12 +25,17 @@ class Ball:
             self.y = 1
         if pos[3] >= self.canvas_height:
             self.y = -1
+        if pos[0] <= 0:
+            self.x = 3
+        if pos[2] >= self.canvas_width:
+            self.x = -3
 
         # print(self.canvas.coords(self.id))      #enable for view ball coords
 
     def change_color(self):
         self.color_index = (self.color_index + 1) % len(self.colors)
-        self.canvas.itemconfig(self.id, fill=self.colors[self.color_index])
+        self.canvas.itemconfig(self.id,
+                               fill=self.colors[self.color_index])
 
 
 tk = Tk()
