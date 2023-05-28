@@ -93,6 +93,26 @@ class Rocket:
         self.started = True
 
 
+def quit_game():
+    tk.destroy()
+
+
+def quit_button():
+    quit_game_button = Button(canvas,
+                              text='Quit',
+                              command=quit_game)
+    quit_game_button.place(x=200, y=350)
+
+
+#def restart_game():
+
+def restart_button():
+    restart_game_button = Button(canvas,
+                                 text='Restart',
+                                 command=restart_game)
+    restart_game_button.place(x=350, y=350)
+
+
 tk = Tk()
 tk.title('Game')
 tk.resizable(False, False)
@@ -115,9 +135,12 @@ while True:
     if not ball.hit_bottom and rocket.started:
         ball.draw()
         rocket.draw()
+
     if ball.hit_bottom:
         time.sleep(0.3)
         canvas.itemconfig(game_over_text, state="normal")
+        quit_button()
+        #restart_button()
 
     tk.update_idletasks()
     tk.update()
