@@ -3,10 +3,24 @@ import random
 import time
 
 
+class Score:
+    def __init__(self, canvas, color):
+        self.score = 0
+        self.canvas = canvas
+        self.id = canvas.create_text(570, 30, text=self.score,
+                                     fill=color,
+                                     font=("Helvetica", 30))
+
+    def hit(self):
+        self.score += 1
+        self.canvas.itemconfig(self.id, text=self.score)
+
+
 class Ball:
-    def __init__(self, canvas, rocket):
+    def __init__(self, canvas, rocket, score):
         self.canvas = canvas
         self.rocket = rocket
+        self.score = score
         self.colors = 'yellow'
         self.color_index = 0
         self.id = canvas.create_oval(10, 10, 35, 35,
@@ -24,6 +38,8 @@ class Ball:
         rocket_pos = self.canvas.coords(self.rocket.id)
         if pos[2] >= rocket_pos[0] and pos[0] <= rocket_pos[2]:
             if rocket_pos[1] <= pos[3] <= rocket_pos[3]:
+                self.x += self.rocket.x
+                self.score.hit()
                 return True
         return False
 
@@ -34,12 +50,12 @@ class Ball:
             self.y = 3
         if pos[3] >= self.canvas_height:
             self.hit_bottom = True
-        if self.hit_rocket(pos) == True:
+        if self.hit_rocket(pos):
             self.y = -3
         if pos[0] <= 0:
-            self.x = 3
+            self.x = 5
         if pos[2] >= self.canvas_width:
-            self.x = -3
+            self.x = -5
 
         # print(self.canvas.coords(self.id))      #enable for view ball coords
 
@@ -68,10 +84,10 @@ class Rocket:
         # print(self.canvas.coords(self.id))
 
     def turn_left(self, evt):
-        self.x = -2
+        self.x = -6
 
     def turn_right(self, evt):
-        self.x = 2
+        self.x = 6
 
     def start_game(self, evt):
         self.started = True
@@ -87,13 +103,21 @@ canvas = Canvas(tk, width=600, height=400, bd=0,
 canvas.pack()
 tk.update()
 
+score = Score(canvas, "green")
 rocket = Rocket(canvas, 'blue')
-ball = Ball(canvas, rocket)
+ball = Ball(canvas, rocket, score)
+game_over_text = canvas.create_text(300, 200, text="GAME OVER",
+                                    state='hidden',
+                                    font=('Helvetica', 40))
 
 while True:
+    # if ball.hit_bottom == False and rocket.stared == True:
     if not ball.hit_bottom and rocket.started:
         ball.draw()
         rocket.draw()
+    if ball.hit_bottom:
+        time.sleep(0.3)
+        canvas.itemconfig(game_over_text, state="normal")
 
     tk.update_idletasks()
     tk.update()
