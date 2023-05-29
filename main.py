@@ -81,7 +81,7 @@ class Rocket:
         elif pos[2] >= self.canvas_width:
             self.x = 0
 
-        # print(self.canvas.coords(self.id))
+        # print(self.canvas.coords(self.id))     #show rocket coords
 
     def turn_left(self, evt):
         self.x = -6
@@ -104,7 +104,16 @@ def quit_button():
     quit_game_button.place(x=200, y=350)
 
 
-#def restart_game():
+def restart_game():
+    ball.hit_bottom = False
+    rocket.started = True
+    score.score = 10
+    canvas.itemconfig(game_over_text, state='hidden')
+    canvas.delete('all')
+    score.__init__(canvas, "green")
+    rocket.__init__(canvas, 'blue')
+    ball.__init__(canvas, rocket, score)
+
 
 def restart_button():
     restart_game_button = Button(canvas,
@@ -140,7 +149,7 @@ while True:
         time.sleep(0.3)
         canvas.itemconfig(game_over_text, state="normal")
         quit_button()
-        #restart_button()
+        restart_button()
 
     tk.update_idletasks()
     tk.update()
